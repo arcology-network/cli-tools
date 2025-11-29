@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const readline = require("readline");
-var frontendUtil = require('@arcologynetwork/frontend-util/utils/util') 
+var cliUtil = require('@arcologynetwork/cli-util/utils/util') 
 
 
 
@@ -30,8 +30,8 @@ async function main() {
   
   // console.time('send time')
 
-  const client =await frontendUtil.startRpc(args[0])
-  const files=frontendUtil.findAllFiles(args[1])
+  const client =await cliUtil.startRpc(args[0])
+  const files=cliUtil.findAllFiles(args[1])
   
   for(fidx=0;fidx<files.length;fidx++){
     sentxs(files[fidx],client)
@@ -58,7 +58,7 @@ function sentxs(file,client){
     }
     txs.push(line.split(',')[0])
     if(txs.length>=1000){
-      frontendUtil.rpcRequest(client,"arn_sendRawTransactions",[...txs])
+      cliUtil.rpcRequest(client,"arn_sendRawTransactions",[...txs])
       counter=counter+txs.length;
       txs=new Array();
     }
@@ -66,7 +66,7 @@ function sentxs(file,client){
   rl.on('error', (error) => console.log(error.message));
   rl.on('close', () => {
     if(txs.length>0){
-      frontendUtil.rpcRequest(client,"arn_sendRawTransactions",[...txs])
+      cliUtil.rpcRequest(client,"arn_sendRawTransactions",[...txs])
       counter=counter+txs.length;
       filenames=file.split('/')
       console.log(`The file ${filenames[filenames.length-1]} is sent,total ${counter}`);

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var frontendUtil = require('@arcologynetwork/frontend-util/utils/util') 
+var cliUtil = require('@arcologynetwork/cli-util/utils/util') 
 
 
 /**
@@ -16,8 +16,8 @@ async function main() {
       return;
     }
 
-    const client =await frontendUtil.startRpc(args[0])
-    let startBlocknum=await frontendUtil.rpcRequest(client,"eth_blockNumber",[])
+    const client =await cliUtil.startRpc(args[0])
+    let startBlocknum=await cliUtil.rpcRequest(client,"eth_blockNumber",[])
 
     let loop=true;
     let blocknum=parseInt(startBlocknum);
@@ -25,9 +25,9 @@ async function main() {
     let maxTps=0;
     while (loop) {
       let block;
-      block=await frontendUtil.rpcRequest(client,"eth_getBlockByNumber",['0x'+(blocknum).toString(16),false])
+      block=await cliUtil.rpcRequest(client,"eth_getBlockByNumber",['0x'+(blocknum).toString(16),false])
       if(block==undefined){
-        await frontendUtil.sleep(1000);
+        await cliUtil.sleep(1000);
         continue;
       }
       blocksWithInOneMinute.push(block);
@@ -35,7 +35,7 @@ async function main() {
       let successful=0;
       let fail=0;
       for(i=0;i<hashes.length;i++){
-        const receipt=await frontendUtil.rpcRequest(client,"eth_getTransactionReceipt",[hashes[i]])
+        const receipt=await cliUtil.rpcRequest(client,"eth_getTransactionReceipt",[hashes[i]])
         if(receipt.status=='0x1'){
           successful=successful+1;
         }else{
